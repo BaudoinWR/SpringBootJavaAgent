@@ -1,21 +1,25 @@
 package fr.socgen.apm;
 
 import fr.socgen.apm.json.GenericResponse;
+import fr.socgen.apm.util.MBeanCaller;
 import fr.socgen.apm.util.MemoryLeaker;
+import fr.socgen.apm.util.Randomed;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.management.*;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.Serializable;
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Random;
 
 /**
  * Created by baudoin on 17/01/17.
@@ -54,37 +58,6 @@ public class Loadup {
 
     }
 
-    @GetMapping(path = "/mBeans")
-    public GenericResponse getMBeans() throws IntrospectionException, InstanceNotFoundException, ReflectionException {
-        MBeanServer mbeanServer = null;
-        if (mbeanServer == null) {
-            List<MBeanServer> mbeanServers = MBeanServerFactory.findMBeanServer(null);
-            if (mbeanServers.size() == 1) {
-                mbeanServer = mbeanServers.get(0);
-            } else {
-                mbeanServer = ManagementFactory.getPlatformMBeanServer();
-            }
-            Set mbeans = mbeanServer.queryNames(null, null);
-            for (Object mbean : mbeans) {
-                WriteAttributes(mbeanServer, (ObjectName) mbean);
-            }
-        }
-        return null;
-    }
-
-    private void WriteAttributes(final MBeanServer mBeanServer, final ObjectName http)
-    throws InstanceNotFoundException, IntrospectionException, ReflectionException
-    {
-        MBeanInfo info = mBeanServer.getMBeanInfo(http);
-        MBeanAttributeInfo[] attrInfo = info.getAttributes();
-
-        System.out.println("Attributes for object: " + http +":\n");
-        for (MBeanAttributeInfo attr : attrInfo)
-        {
-            System.out.println("  " + attr.getName() + "\n");
-        }
-    }
-
     @GetMapping(path = "/dumpSpace")
     public List<SpaceOnDrive> dumpSpace() {
 
@@ -98,6 +71,11 @@ public class Loadup {
             }
         }
         return result;
+    }
+
+    @GetMapping(path = "mbeans")
+    public void listMbeans() throws NotCompliantMBeanException, InstanceAlreadyExistsException, MalformedObjectNameException, MBeanRegistrationException {
+        MBeanCaller.register(new Randomed(), "fr.socgen.apm.util:type=Randomed");
     }
 
     private class SpaceOnDrive implements Serializable {
