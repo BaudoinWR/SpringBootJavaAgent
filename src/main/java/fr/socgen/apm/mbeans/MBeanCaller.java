@@ -1,4 +1,4 @@
-package fr.socgen.apm.util;
+package fr.socgen.apm.mbeans;
 
 import javax.management.*;
 import java.lang.management.ManagementFactory;

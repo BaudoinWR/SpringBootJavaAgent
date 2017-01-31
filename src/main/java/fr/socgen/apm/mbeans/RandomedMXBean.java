@@ -1,4 +1,4 @@
-package fr.socgen.apm.util;
+package fr.socgen.apm.mbeans;
 
 /**
  * Created by x159139 on 30/01/2017.

@@ -1,9 +1,10 @@
 package fr.socgen.apm;
 
 import fr.socgen.apm.json.GenericResponse;
-import fr.socgen.apm.util.MBeanCaller;
+import fr.socgen.apm.mbeans.MBeanCaller;
+import fr.socgen.apm.mbeans.ThradCounter;
 import fr.socgen.apm.util.MemoryLeaker;
-import fr.socgen.apm.util.Randomed;
+import fr.socgen.apm.mbeans.Randomed;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by baudoin on 17/01/17.
@@ -75,7 +75,6 @@ public class Loadup {
 
     @GetMapping(path = "mbeans")
     public void listMbeans() throws NotCompliantMBeanException, InstanceAlreadyExistsException, MalformedObjectNameException, MBeanRegistrationException {
-        MBeanCaller.register(new Randomed(), "fr.socgen.apm.util:type=Randomed");
     }
 
     private class SpaceOnDrive implements Serializable {
